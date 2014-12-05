@@ -26,7 +26,7 @@ Once you have that in place, install dependencies.
 
 Initialise environment variables.
 
-	[you@host:~/awsome]$ ./setvars.sh
+	[you@host:~/awsome]$ source ./setvars.sh
 	AWS Environment Set.
 
 And off you go.
