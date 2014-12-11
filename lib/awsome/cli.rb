@@ -100,7 +100,7 @@ module Awsome
           end
         end
 
-        if options[:asg]
+        if options[:asg] and !result[:asgs].nil?
           result[:asgs].each do |asg|
           enabled = result[:elb_instance_ids] & asg[:instance_ids]
 
