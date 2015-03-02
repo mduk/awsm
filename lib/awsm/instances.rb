@@ -1,4 +1,4 @@
-module Awsome
+module Awsm
   class Instances
     def initialize
       @client = Aws::EC2::Client.new

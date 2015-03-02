@@ -1,4 +1,4 @@
-module Awsome
+module Awsm
   class AutoScalingGroups
     def initialize
       @client = Aws::AutoScaling::Client.new

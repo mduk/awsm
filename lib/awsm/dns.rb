@@ -1,6 +1,6 @@
 require 'aws-sdk-core'
 
-module Awsome
+module Awsm
   class Dns
     def initialize
       @client = Aws::Route53::Client.new
@@ -14,7 +14,7 @@ module Awsome
 
     def load_dns_records
       paged_response = @client.list_resource_record_sets(
-        hosted_zone_id: ENV['AWSOME_HOSTEDZONE']
+        hosted_zone_id: ENV['AWSM_HOSTEDZONE']
       )
 
       paged_response.each_page do |p|

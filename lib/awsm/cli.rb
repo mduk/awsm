@@ -1,6 +1,6 @@
 require 'thor'
 
-module Awsome 
+module Awsm 
   class Cli < Thor
     class_option :instances, :type => :boolean, :default => false, :aliases => "-i",
       :desc => "Also show instance information. Including ID, Private IP, and current health."
@@ -27,25 +27,25 @@ module Awsome
 
     no_commands do
       def load_balancers
-        Awsome::LoadBalancers.new
+        Awsm::LoadBalancers.new
       end
 
       def instances
-        Awsome::Instances.new
+        Awsm::Instances.new
       end
 
       def dns
-        Awsome::Dns.new
+        Awsm::Dns.new
       end
 
       def asg
-        Awsome::AutoScalingGroups.new
+        Awsm::AutoScalingGroups.new
       end
 
       def do_options( results )
         if options[:instances]
           results.map do |combined|
-            instance_data = Awsome::Instances.new.get_instance_data( combined[:elb_instance_ids] )
+            instance_data = Awsm::Instances.new.get_instance_data( combined[:elb_instance_ids] )
             combined[:instances] = instance_data
           end
           say "Added instance data", :white

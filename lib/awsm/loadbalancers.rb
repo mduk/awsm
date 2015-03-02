@@ -1,4 +1,4 @@
-module Awsome
+module Awsm
   class LoadBalancers
     def initialize
       @elb_client = Aws::ElasticLoadBalancing::Client.new

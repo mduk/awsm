@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'awsome'
-
-Awsome::Cli.start( ARGV )
-

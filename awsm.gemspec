@@ -1,20 +1,20 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'awsome/version'
+require 'awsm/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "awsome"
-  spec.version       = Awsome::VERSION
+  spec.name          = "awsm"
+  spec.version       = Awsm::VERSION
   spec.authors       = ["Daniel Kendell"]
   spec.email         = ["daniel@kendell.org"]
-  spec.summary       = %q{Awsome AWS queryer}
-  spec.description   = %q{Awsome AWS queryer.}
+  spec.summary       = %q{Awsm AWS queryer}
+  spec.description   = %q{Awsm AWS queryer}
   spec.homepage      = ""
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = [ 'awsome' ]
+  spec.executables   = [ 'awsm' ]
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
