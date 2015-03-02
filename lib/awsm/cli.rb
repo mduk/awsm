@@ -75,6 +75,7 @@ module Awsm
         say result[:elb][:name], :green, false
         print ' <= '
 
+	# DNS
         if result[:r53_dns].nil?
           say result[:elb][:dns], :white, false
         else
@@ -83,6 +84,7 @@ module Awsm
 
         puts
 
+	# Load Balancer Tags
         say "  NO TAGS!", :red  unless result[:elb][:tags].length > 0
         say "  Tags:" if result[:elb][:tags].length > 0
         result[:elb][:tags].each do |k, v|
@@ -100,7 +102,15 @@ module Awsm
           end
         end
 
-        if options[:asg]
+	# Auto Scaling Groups
+	if options[:asg]
+	  say "  Auto Scaling Groups:"
+	end
+        if options[:asg] and result[:asgs].nil?
+	  say "    No Auto Scaling Groups!", :red
+	end
+
+        if options[:asg] and !result[:asgs].nil?
           result[:asgs].each do |asg|
           enabled = result[:elb_instance_ids] & asg[:instance_ids]
 
