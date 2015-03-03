@@ -11,8 +11,8 @@ module Awsm
         ]
       } ).reservations.first
 
-	  if first_reservation.nil?
-		  return []
+      if first_reservation.nil?
+        return []
       end
 
 	  descriptions = first_reservation.instances
