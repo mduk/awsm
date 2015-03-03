@@ -5,11 +5,17 @@ module Awsm
     end
 
     def get_instance_data( instance_ids )
-      descriptions = @client.describe_instances( {
+      first_reservation = @client.describe_instances( {
         filters: [
           { name: "instance-id", values: instance_ids }
         ]
-      } ).reservations.first.instances
+      } ).reservations.first
+
+	  if first_reservation.nil?
+		  return []
+      end
+
+	  descriptions = first_reservation.instances
 
       instance_hash = {}
       descriptions.each do |description|

@@ -95,10 +95,14 @@ module Awsm
         end
 
         if options[:instances]
-          say "  Instances:"
-          result[:instances].each do |instance_and_id|
-            instance = instance_and_id[1]
-            print_instance( 12, instance )
+          if result[:instances] != []
+            say "  Instances:"
+            result[:instances].each do |instance_and_id|
+              instance = instance_and_id[1]
+              print_instance( 12, instance )
+            end
+          else
+            say "  No Instances!", :red
           end
         end
 
