@@ -2,12 +2,26 @@
 
 Awsm is an awesome AWS querying tool. Pun most certainly intended.
 
-## Make it go!
+## Install from RubyGems
+
+Awsm is available on RubyGems, to install it, all you need to do is:
+
+```
+gem install awsm
+```
+
+## Install from Source
 
 Awsm is written in Ruby 2.1, so you'll need that to start with, you'll also need the `bundler` gem.
 
-	[you@host:~]$ git clone https://github.com/mduk/awsome
-	[you@host:~]$ cd awsome
+```
+[you@host:~]$ git clone https://github.com/mduk/awsm
+[you@host:~]$ cd awsm
+[you@host:~/awsm]$ bundle install
+[you@host:~/awsm]$ gem build awsm.gemspec
+[you@host:~/awsm]$ gem install awsm-x.x.x.gem
+[you@host:~/awsm]$ awsm
+```
 
 Awsm requires four enviornment variables to be set in order to work. I use something like this:
 
@@ -19,20 +33,6 @@ Awsm requires four enviornment variables to be set in order to work. I use somet
 	export AWSM_HOSTEDZONE="Don't leak this either."
 
 	echo -e "\033[1m\033[92mAWS Environment Set.\033[0m"
-
-Once you have that in place, install dependencies.
-
-	[you@host:~/awsome]$ bundle install
-
-Initialise environment variables.
-
-	[you@host:~/awsome]$ source ./setvars.sh
-	AWS Environment Set.
-
-And off you go.
-
-	[you@host:~/awsome]$ bundle exec awsome search -dia beta
-
 
 # Licence
 
