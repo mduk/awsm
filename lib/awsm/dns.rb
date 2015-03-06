@@ -4,12 +4,19 @@ module Awsm
   class Dns
     def initialize
       @client = Aws::Route53::Client.new
-      @dns_map = {}
+      @dns_map_by_target = {}
+      @records = []
       load_dns_records
     end
 
     def find_for( target )
-      @dns_map[ target ]
+      @dns_map_by_target[ target ]
+    end
+
+    def get_by_record( record )
+      @records.select do |r|
+        r.name =~ /^#{record}/
+      end
     end
 
     def load_dns_records
@@ -29,7 +36,8 @@ module Awsm
             target = r.resource_records[0].value
           end
 
-          @dns_map[target] = r.name
+          @dns_map_by_target[target] = r.name
+          @records << r
         end
       end
     end

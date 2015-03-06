@@ -25,6 +25,25 @@ module Awsm
       results.each { |elb| print_result(elb) }
     end
 
+    desc "r53 [dns-name]",
+      "Show me what <dns-name> points at."
+    def r53( dns_name )
+      dns_len = dns_name.length
+
+      say "#{dns_name} ", :yellow
+      say "=> ", :bold
+      dns.get_by_record( dns_name ).each_with_index do |r, i|
+        if i > 0
+          say " " * ( dns_len + 4 )
+        end
+        say "(#{r.type}) ", :green
+	    case r.type
+          when "A"
+            say "#{r.alias_target.dns_name}", :cyan
+        end
+      end
+    end
+
     no_commands do
       def load_balancers
         Awsm::LoadBalancers.new
@@ -75,7 +94,7 @@ module Awsm
         say result[:elb][:name], :green, false
         print ' <= '
 
-	# DNS
+        # DNS
         if result[:r53_dns].nil?
           say result[:elb][:dns], :white, false
         else
@@ -84,7 +103,7 @@ module Awsm
 
         puts
 
-	# Load Balancer Tags
+        # Load Balancer Tags
         say "  NO TAGS!", :red  unless result[:elb][:tags].length > 0
         say "  Tags:" if result[:elb][:tags].length > 0
         result[:elb][:tags].each do |k, v|
