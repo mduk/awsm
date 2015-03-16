@@ -9,6 +9,9 @@ module Awsm
     class_option :asg, :type => :boolean, :default => false, :aliases => "-a",
       :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
 
+    desc "spin", "spinny instances"
+    subcommand "spin", Awsm::Spin
+
     desc "specific <comma-separated-elb-names>",
       "Only find specific ELBs named in a comma-separated list."
     def specific( elb_names )
