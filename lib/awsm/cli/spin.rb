@@ -20,6 +20,11 @@ module Awsm
       instance_id = response.instances.first.instance_id
       say "Instance #{instance_id} is spinning up...", :green
 
+      while instance_extant?( instance_id ) == false
+        say '.', :green, false
+        sleep(3)
+      end
+
       me = `whoami`.strip
 
       tags = [
@@ -35,9 +40,9 @@ module Awsm
 
       say "Tagged #{instance_id}:"
       tags.each do |tag|
-        say "#{tag.key} ", :cyan
+        say "    #{tag[:key]} ", :cyan
         say '=> '
-        say "#{tag.value}", :yellow
+        say "#{tag[:value]}", :yellow
       end
     end
 
@@ -59,6 +64,20 @@ module Awsm
     no_commands do
       def ec2
         Aws::EC2::Client.new
+      end
+
+      def instance_extant?( instance_id )
+        description = ec2.describe_instances(
+          instance_ids: [ instance_id ]
+        )
+
+        num_found = description.reservations.first.instances.length
+
+        if num_found == 0
+          return false
+        end
+
+        true
       end
     end
   end
