@@ -20,9 +20,11 @@ module Awsm
       instance_id = response.instances.first.instance_id
       say "Instance #{instance_id} is spinning up...", :green
 
+      me = `whoami`.strip
+
       tags = [
-        { key: 'Name', value: "Temporary instance of #{ami_id}" },
-        { key: 'mendeley:contact', value: `whoami`.strip },
+        { key: 'Name', value: "Temporary instance of #{ami_id} for #{me}" },
+        { key: 'mendeley:contact', value: me },
         { key: 'mendeley:environment', value: 'development' }
       ]
 
