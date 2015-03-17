@@ -25,12 +25,14 @@ module Awsm
         sleep(3)
       end
 
-      me = `whoami`.strip
+      me_host = `hostname -f`.strip
+      me_user = `whoami`.strip
 
       tags = [
         { key: 'Name', value: "Temporary instance of #{ami_id} for #{me}" },
-        { key: 'mendeley:contact', value: me },
-        { key: 'mendeley:environment', value: 'development' }
+        { key: 'awsm:owner', value: "#{me_user}@#{me_host}" },
+        { key: 'mendeley:contact', value: 'dkendell' },
+        { key: 'mendeley:environment', value: 'development' },
       ]
 
       ec2.create_tags(
