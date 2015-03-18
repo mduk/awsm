@@ -74,8 +74,14 @@ module Awsm
               :yellow
           end
 
-            say "#{i.instance_id} #{i.state.name} #{i.image_id} #{i.private_ip_address} #{i.launch_time} #{owner}", colour
+          parts = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
+
+          if i.state.name == 'running'
+            parts << i.private_ip_address
           end
+
+          say parts.join(' '), colour
+        end
       end
     end
 
