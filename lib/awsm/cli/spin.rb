@@ -25,12 +25,9 @@ module Awsm
         sleep(3)
       end
 
-      me_host = `hostname -f`.strip
-      me_user = `whoami`.strip
-
       tags = [
-        { key: 'Name', value: "Temporary instance of #{ami_id} for #{me}" },
-        { key: 'awsm:owner', value: "#{me_user}@#{me_host}" },
+        { key: 'Name', value: "Temporary instance of #{ami_id} for #{whoami}" },
+        { key: 'awsm:owner', value: whoami },
         { key: 'mendeley:contact', value: 'dkendell' },
         { key: 'mendeley:environment', value: 'development' },
       ]
@@ -66,6 +63,12 @@ module Awsm
     no_commands do
       def ec2
         Aws::EC2::Client.new
+      end
+
+      def whoami
+        me_host = `hostname -f`.strip
+        me_user = `whoami`.strip
+        "#{me_user}@#{me_host}"
       end
 
       def instance_extant?( instance_id )
