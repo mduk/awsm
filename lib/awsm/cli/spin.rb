@@ -57,7 +57,26 @@ module Awsm
     desc 'list',
       "List all spinning instances"
     def list
-      say "Listing spinning...", :yellow
+      response = ec2.describe_instances(
+        filters: [
+          { name: 'tag-key', values: [ "awsm:owner" ] }
+        ]
+      )
+      response.reservations.each do |r|
+        r.instances.each do |i|
+          owner = i.tags.select { |t| t.key == 'awsm:owner' }.first.value
+          colour = case i.state.name
+            when 'running'
+              :green
+            when 'terminated'
+              :red
+            else
+              :yellow
+          end
+
+            say "#{i.instance_id} #{i.state.name} #{i.image_id} #{i.private_ip_address} #{i.launch_time} #{owner}", colour
+          end
+      end
     end
 
     no_commands do
