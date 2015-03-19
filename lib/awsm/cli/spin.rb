@@ -11,10 +11,10 @@ module Awsm
         image_id: ami_id,
         min_count: 1,
         max_count: 1,
-        key_name: 'magi-cucumber',
-        instance_type: 't2.micro',
-        security_group_ids: [ 'sg-961d01fa' ], # Staging
-        subnet_id: 'subnet-20e3d466' # Staging
+        key_name: configured_key_name,
+        instance_type: configured_instance_type,
+        security_group_ids: configured_security_groups,
+        subnet_id: configured_subnet
       )
 
       instance_id = response.instances.first.instance_id
@@ -27,10 +27,12 @@ module Awsm
 
       tags = [
         { key: 'Name', value: "Temporary instance of #{ami_id} for #{whoami}" },
-        { key: 'awsm:owner', value: whoami },
-        { key: 'mendeley:contact', value: 'dkendell' },
-        { key: 'mendeley:environment', value: 'development' },
+        { key: 'awsm:owner', value: whoami }
       ]
+
+      configured_tags.each do |k, v|
+        tags << { key: k, value: v }
+      end
 
       ec2.create_tags(
         resources: [ instance_id ],
@@ -115,6 +117,30 @@ module Awsm
         end
 
         true
+      end
+
+      def config
+        Config.new.get('Spin')
+      end
+
+      def configured_security_groups
+        config['SecurityGroups']
+      end
+
+      def configured_subnet
+        config['Subnet']
+      end
+
+      def configured_instance_type
+        config['InstanceType']
+      end
+
+      def configured_key_name
+        config['KeyName']
+      end
+
+      def configured_tags
+        config['Tags']
       end
     end
   end
