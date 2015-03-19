@@ -62,27 +62,26 @@ module Awsm
           { name: 'tag-key', values: [ "awsm:owner" ] }
         ]
       )
+      spinning = []
       response.reservations.each do |r|
         r.instances.each do |i|
           owner = i.tags.select { |t| t.key == 'awsm:owner' }.first.value
-          colour = case i.state.name
-            when 'running'
-              :green
-            when 'terminated'
-              :red
-            else
-              :yellow
-          end
-
-          parts = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
+          fields = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
 
           if i.state.name == 'running'
-            parts << i.private_ip_address
+            fields << i.private_ip_address
+          else
+            fields << 'N/A'
           end
 
-          say parts.join(' '), colour
+          spinning << fields
         end
       end
+
+      puts Terminal::Table.new(
+        headings: [ 'Instance ID', 'State', 'AMI ID', 'Owner', 'Launched Time', 'Private IP' ],
+        rows: spinning
+      )
     end
 
     no_commands do
