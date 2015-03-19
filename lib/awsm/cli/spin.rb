@@ -56,6 +56,8 @@ module Awsm
 
     desc 'list',
       "List all spinning instances"
+    option :simple, :type => :boolean, :default => false, :aliases => '-s',
+      :desc => "Display list without prettiness - good for sedding"
     def list
       response = ec2.describe_instances(
         filters: [
@@ -78,10 +80,16 @@ module Awsm
         end
       end
 
-      puts Terminal::Table.new(
-        headings: [ 'Instance ID', 'State', 'AMI ID', 'Owner', 'Launched Time', 'Private IP' ],
-        rows: spinning
-      )
+      if options[:simple]
+        spinning.each do |row|
+          say row.join(' ')
+        end
+      else
+        puts Terminal::Table.new(
+          headings: [ 'Instance ID', 'State', 'AMI ID', 'Owner', 'Launched Time', 'Private IP' ],
+          rows: spinning
+        )
+      end
     end
 
     no_commands do
