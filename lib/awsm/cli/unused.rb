@@ -1,9 +1,7 @@
-require 'pry'
-
 module Awsm
   module CLI
 
-    class Prune < Thor
+    class Unused < Thor
 
       desc "elasticloadbalancers",
         "Find and prune elastic load balancers that aren't connected to anything"
