@@ -9,6 +9,7 @@ require 'awsm/autoscalinggroups'
 require 'awsm/dns'
 require 'awsm/instances'
 
+require 'awsm/cli/prune'
 require 'awsm/cli/spin'
 require 'awsm/cli/main'
 

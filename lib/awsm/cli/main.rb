@@ -11,6 +11,9 @@ module CLI
     desc "spin", "spinny instances"
     subcommand "spin", Awsm::CLI::Spin
 
+	desc 'prune', 'Locate and Prune unused resources'
+	subcommand 'prune', Awsm::CLI::Prune
+
     desc "specific <comma-separated-elb-names>",
       "Only find specific ELBs named in a comma-separated list."
     def specific( elb_names )
