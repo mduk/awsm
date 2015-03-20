@@ -8,9 +8,6 @@ module Awsm
       desc "elasticloadbalancers",
         "Find and prune elastic load balancers that aren't connected to anything"
       def elasticloadbalancers
-        find_instanceless_elbs.map do |elb|
-          [ elb.load_balancer_name, elb.dns_name, elb.created_time ]
-        end
         puts Terminal::Table.new(
           headings: [ "ELB Name", "DNS", "Created Time" ],
           rows: find_instanceless_elbs.map do |elb|
