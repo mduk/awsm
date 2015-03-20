@@ -1,6 +1,5 @@
-require 'thor'
-
 module Awsm
+  module CLI
   class Spin < Thor 
 
     desc 'up [AMI_ID]',
@@ -144,4 +143,5 @@ module Awsm
       end
     end
   end
+end
 end

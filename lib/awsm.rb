@@ -10,7 +10,5 @@ require 'awsm/dns'
 require 'awsm/instances'
 
 require 'awsm/cli/spin'
-require 'awsm/cli'
+require 'awsm/cli/main'
 
-module Awsm
-end

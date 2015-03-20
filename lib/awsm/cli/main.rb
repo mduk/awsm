@@ -1,7 +1,6 @@
-require 'thor'
-
 module Awsm 
-  class Cli < Thor
+module CLI
+  class Main < Thor
     class_option :instances, :type => :boolean, :default => false, :aliases => "-i",
       :desc => "Also show instance information. Including ID, Private IP, and current health."
     class_option :dns, :type => :boolean, :default => false, :aliases => "-d",
@@ -10,7 +9,7 @@ module Awsm
       :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
 
     desc "spin", "spinny instances"
-    subcommand "spin", Awsm::Spin
+    subcommand "spin", Awsm::CLI::Spin
 
     desc "specific <comma-separated-elb-names>",
       "Only find specific ELBs named in a comma-separated list."
@@ -170,4 +169,5 @@ module Awsm
       end
     end
   end
+end
 end

@@ -2,5 +2,5 @@
 
 require 'awsm'
 
-Awsm::Cli.start( ARGV )
+Awsm::CLI::Main.start( ARGV )
 
