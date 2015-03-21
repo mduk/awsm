@@ -72,15 +72,18 @@ module Awsm
       response.reservations.each do |r|
         r.instances.each do |i|
           owner = i.tags.select { |t| t.key == 'awsm:owner' }.first.value
-          fields = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
 
-          if i.state.name == 'running'
-            fields << i.private_ip_address
-          else
-            fields << 'N/A'
+          if owner == whoami
+            fields = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
+
+            if i.state.name == 'running'
+              fields << i.private_ip_address
+            else
+              fields << 'N/A'
+            end
+
+            spinning << fields
           end
-
-          spinning << fields
         end
       end
 
