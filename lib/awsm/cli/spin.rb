@@ -1,6 +1,9 @@
 module Awsm
   module CLI
-  class Spin < Thor 
+  class Spin < Clibase
+
+    class_option :tables, :type => :boolean, :lazy_default => true, :default => true,
+      :desc => "Whether or not to draw ASCII tables."
 
     desc 'up [AMI_ID]',
       "Spin up an instance of the specified AMI"
@@ -86,7 +89,7 @@ module Awsm
           say row.join(' ')
         end
       else
-        puts Terminal::Table.new(
+        puts_table(
           headings: [ 'Instance ID', 'State', 'AMI ID', 'Owner', 'Launched Time', 'Private IP' ],
           rows: spinning
         )

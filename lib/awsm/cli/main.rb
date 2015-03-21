@@ -1,14 +1,15 @@
 module Awsm 
 module CLI
-  class Main < Thor
+  class Main < Clibase
     class_option :instances, :type => :boolean, :default => false, :aliases => "-i",
       :desc => "Also show instance information. Including ID, Private IP, and current health."
     class_option :dns, :type => :boolean, :default => false, :aliases => "-d",
       :desc => "Check if there are any Route53 records pointing at this Load Balancer"
+
     class_option :asg, :type => :boolean, :default => false, :aliases => "-a",
       :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
 
-    desc "spin", "spinny instances"
+    desc "spin", "Ad-hoc instances"
     subcommand "spin", Awsm::CLI::Spin
 
 	desc 'unused', 'Find unused resources'
