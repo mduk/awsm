@@ -10,9 +10,6 @@ module Awsm
       class_option :asg, :type => :boolean, :default => false, :aliases => "-a",
         :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
 
-      desc 'info', 'Display resource information.'
-      subcommand 'info', Awsm::CLI::Info
-
       desc 'spin', 'Ad-hoc instances'
       subcommand 'spin', Awsm::CLI::Spin
 
