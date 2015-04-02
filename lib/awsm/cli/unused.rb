@@ -1,12 +1,15 @@
 module Awsm
   module CLI
 
-    class Unused < Thor
+    class Unused < Clibase
+
+      class_option :tables, :type => :boolean, :lazy_default => true, :default => true,
+        :desc => "Whether or not to draw ASCII tables."
 
       desc "elasticloadbalancers",
         "Find and prune elastic load balancers that aren't connected to anything"
       def elasticloadbalancers
-        puts Terminal::Table.new(
+        puts_table(
           headings: [ "ELB Name", "DNS", "Created Time" ],
           rows: find_instanceless_elbs.map do |elb|
             [ elb.load_balancer_name, elb.dns_name, elb.created_time ]
@@ -17,7 +20,7 @@ module Awsm
       desc 'launchconfigurations',
         "Find unused launch configurations"
       def launchconfigurations
-        puts Terminal::Table.new(
+        puts_table(
           headings: [ "Launch Configuration Name", "Created Time" ],
           rows: find_unused_launchconfigurations.map do |lc|
             [ lc.launch_configuration_name, lc.created_time ]

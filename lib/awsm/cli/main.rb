@@ -1,53 +1,57 @@
 module Awsm 
-module CLI
-  class Main < Thor
-    class_option :instances, :type => :boolean, :default => false, :aliases => "-i",
-      :desc => "Also show instance information. Including ID, Private IP, and current health."
-    class_option :dns, :type => :boolean, :default => false, :aliases => "-d",
-      :desc => "Check if there are any Route53 records pointing at this Load Balancer"
-    class_option :asg, :type => :boolean, :default => false, :aliases => "-a",
-      :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
+  module CLI
+    class Main < Clibase
+      class_option :instances, :type => :boolean, :default => false, :aliases => "-i",
+        :desc => "Also show instance information. Including ID, Private IP, and current health."
 
-    desc "spin", "spinny instances"
-    subcommand "spin", Awsm::CLI::Spin
+      class_option :dns, :type => :boolean, :default => false, :aliases => "-d",
+        :desc => "Check if there are any Route53 records pointing at this Load Balancer"
 
-	desc 'unused', 'Find unused resources'
-	subcommand 'unused', Awsm::CLI::Unused
+      class_option :asg, :type => :boolean, :default => false, :aliases => "-a",
+        :desc => "Show Auto Scaling Groups that are receiving traffic from this Load Balancer"
 
-    desc "specific <comma-separated-elb-names>",
-      "Only find specific ELBs named in a comma-separated list."
-    def specific( elb_names )
-      results = load_balancers.get(elb_names)
-      results = do_options( results )
-      results.each { |elb| print_result(elb) }
-    end
+      desc 'spin', 'Ad-hoc instances'
+      subcommand 'spin', Awsm::CLI::Spin
 
-    desc "search <search-terms>",
-      "Show ELBs where the name matches the search terms."
-    def search( search_terms )
-      results = load_balancers.getAll.select { |combined| combined[:elb][:name] =~ /#{search_terms}/ }
-      results = do_options( results )
-      results.each { |elb| print_result(elb) }
-    end
+      desc 'unused', 'Find unused resources'
+      subcommand 'unused', Awsm::CLI::Unused
 
-    desc "r53 [dns-name]",
-      "Show me what <dns-name> points at."
-    def r53( dns_name )
-      dns_len = dns_name.length
+      desc "specific <comma-separated-elb-names>",
+        "Only find specific ELBs named in a comma-separated list."
+      def specific( elb_names )
+        results = load_balancers.get(elb_names)
+        results = do_options( results )
+        results.each { |elb| print_result(elb) }
+      end
 
-      say "#{dns_name} ", :yellow
-      say "=> ", :bold
-      dns.get_by_record( dns_name ).each_with_index do |r, i|
+      desc "search <search-terms>",
+        "Show ELBs where the name matches the search terms."
+      def search( search_terms )
+        results = load_balancers.getAll.select do |combined|
+          combined[:elb][:name] =~ /#{search_terms}/
+        end
+        results = do_options( results )
+        results.each { |elb| print_result(elb) }
+      end
+
+      desc "r53 [dns-name]",
+        "Show me what <dns-name> points at."
+      def r53( dns_name )
+        dns_len = dns_name.length
+
+        say "#{dns_name} ", :yellow
+        say "=> ", :bold
+        dns.get_by_record( dns_name ).each_with_index do |r, i|
         if i > 0
           say " " * ( dns_len + 4 )
         end
         say "(#{r.type}) ", :green
-	    case r.type
+        case r.type
           when "A"
             say "#{r.alias_target.dns_name}", :cyan
+          end
         end
       end
-    end
 
     no_commands do
       def load_balancers
