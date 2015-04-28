@@ -12,39 +12,34 @@ module Awsm
   class Configulator
 
     def initialize
-      @spin = {}
+      @spin_blocks = {}
     end
 
-    def spin( preset=nil )
+    def spin( preset=nil, &block )
       if block_given?
         if preset.nil?
           preset = 'default'
-          c = Spinulator.new
-        else
-          c = Spinulator.new( @spin['default'] )
         end
 
-        yield c
-        @spin[ preset ] = c
-      else
-        if preset.nil?
-          preset = 'default'
-        end
-
-        return @spin[ preset ]
+        @spin_blocks[ preset ] = block
       end
     end
 
     def get_spin( preset=nil )
-      if preset.nil?
+      if preset.nil? || preset == 'default'
         preset = 'default'
+        c = Spinulator.new
+      else
+        c = Spinulator.new( get_spin('default') )
       end
 
-      if @spin[ preset ].nil?
+      if @spin_blocks[ preset ].nil?
         raise StandardError, "Invalid preset: #{preset}"
       end
 
-      return @spin[ preset ]
+      @spin_blocks[ preset ].call( c )
+
+      return c
     end
 
   end
@@ -54,45 +49,31 @@ module Awsm
     def initialize( default=nil )
       @default = default
       @config = {}
-      @valid_read_keys = [
-        :instance_type,
-        :image_id,
-        :key_id,
-        :subnet,
-        :security_groups,
-        :tags
-      ]
-      @valid_write_keys = [
-        :instance_type,
-        :image_id,
-        :key_name,
-        :subnet
-      ]
     end
 
-    def valid_read_key( key )
-      unless @valid_read_keys.include?( name )
-        raise StandardError, "#{name} is not a valid config-read key"
-      end
-    end
-
-    def valid_write_key( key )
-      unless @valid_write_keys.include?( name )
-        raise StandardError, "#{name} is not a valid config-write key"
-      end
-    end
- 
     def method_missing( name, *args )
       n_args = args.length
 
-      if @config[ name ].nil? && n_args == 1 && valid_write_key( name )
+      write = ( n_args > 0 || block_given?)
+
+      if write
+        if block_given?
+          args << yield
+        end
+
+        unless @config[ name ].nil?
+          raise StandardError, "#{name} has already been set!"
+        end
+
         @config[ name ] = args.first
-      elsif @config[ name ].nil? && n_args == 0 && block_given? && valid_write_key( name )
-        @config[ name ] = yield
-      elsif @config[ name ] && n_args == 0 && valid_read_key( name )
-        return @config[ name ]
-      elsif valid_read_key( name )
-        return @default.send( name.to_sym )
+      else
+        if @config[ name ].nil? && @default.nil?
+          raise StandardError, "#{name} has not been set."
+        elsif @config[ name ].nil?
+          return @default.send( name.to_sym )
+        else
+          return @config[ name ]
+        end
       end
     end
 
