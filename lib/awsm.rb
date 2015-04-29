@@ -2,11 +2,9 @@ require 'yaml'
 require 'thor'
 require 'terminal-table'
 
-
 require 'awsm/version'
 
 require 'awsm/configure'
-require 'awsm/config'
 
 require 'awsm/loadbalancers'
 require 'awsm/autoscalinggroups'

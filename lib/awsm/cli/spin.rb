@@ -156,30 +156,7 @@ module Awsm
         end
       end
 
-      def config
-        Config.new.get('Spin')
-      end
-
-      def configured_security_groups
-        config['SecurityGroups']
-      end
-
-      def configured_subnet
-        config['Subnet']
-      end
-
-      def configured_instance_type
-        config['InstanceType']
-      end
-
-      def configured_key_name
-        config['KeyName']
-      end
-
-      def configured_tags
-        config['Tags']
-      end
-    end
-  end
-end
-end
+    end #no_commands
+  end #class
+end #module
+end #module
