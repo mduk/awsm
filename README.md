@@ -25,32 +25,45 @@ Awsm is written in Ruby 2.1, so you'll need that to start with, you'll also need
 
 ## Running Awsm
 
-Awsm requires four enviornment variables to be set in order to work. I use something like this:
+Awsm requires three enviornment variables to be set in order to work. I use something like this:
 
 	#!/bin/bash
 
 	export AWS_ACCESS_KEY_ID="You do not leak keys on github."
 	export AWS_SECRET_ACCESS_KEY="You DO, NOT, LEAK, keys on github!"
 	export AWS_REGION="eu-west-1"
-	export AWSM_HOSTEDZONE="Don't leak this either."
 
 	echo -e "\033[1m\033[92mAWS Environment Set.\033[0m"
 
 ## Configuring Awsm
 
-Awsm will read configuration from `~/.awsm`. This is just used for the `spin` subcommand for now.
-An example `~/.awsm` file is shown below:
+Awsm will read configuration from `~/.awsm.rb`. An example `~/.awsm.rb` file is shown below:
 
 ```
-Spin:
-  InstanceType: t2.micro
-  KeyName: my-aws-keypair
-  Subnet: subnet-a0b1c2d3
-  SecurityGroups:
-    - sg-a0b1c2d3
-  Tags:
-    "h2g2:contact": "ford.prefect@megadodo.h2g2"
-    "h2g2:planet": kakrafoon
+Awsm::configure do |c|
+
+  c.dns do |c|
+    c.hosted_zone '/hostedzone/somethingorother'
+  end
+
+  # Default Instance Parameters
+  c.spin do |c|
+    c.instance_type 't2.micro'
+    c.key_name 'my-key'
+    c.subnet 'subnet-a0b1c2d3'
+    c.security_group 'sg-a0b1c2d3'
+    c.tag 'h2g2:contact', 'ford.prefect@megadodo.h2g2'
+    c.tag 'h2g2:planet', 'kakrafoon'
+  end
+
+  # Preset: mything
+  c.spin 'mything' do |c|
+    c.image_id 'ami-a0b1c2d3'
+    c.security_group 'sg-a1b2c3d4'
+    c.tag 'thing:environment', 'dev'
+  end
+
+end
 ```
 
 # Licence

@@ -7,45 +7,30 @@ module Awsm
 
     desc 'up [AMI_ID]',
       "Spin up an instance of the specified AMI"
-    def up( ami_id )
-      say "Spinning up #{ami_id}..."
-      response = ec2.run_instances(
-        image_id: ami_id,
-        min_count: 1,
-        max_count: 1,
-        key_name: configured_key_name,
-        instance_type: configured_instance_type,
-        security_group_ids: configured_security_groups,
-        subnet_id: configured_subnet
-      )
+    option :image_id
+    option :key_name
+    def up( preset )
+      if /^ami-.+$/.match( preset )
+        c = Awsm::spin_config('default')
+        c.image_id( preset )
+      else
+        c = Awsm::spin_config( preset )
 
-      instance_id = response.instances.first.instance_id
-      say "Instance #{instance_id} is spinning up...", :green
+        unless options[:image_id].nil?
+          unless c.image_id.nil?
+            override_alert( 'image_id', c.image_id, options[:image_id] )
+          end
+          c.image_id( options[:image_id] )
+        end
 
-      while instance_extant?( instance_id ) == false
-        say '.', :green, false
-        sleep(3)
-      end
+        unless options[:key_name].nil?
+          unless c.key_name.nil?
+            override_alert( 'key_name', c.key_name, options[:key_name] )
+          end
+          c.key_name( options[:key_name] )
+        end
 
-      tags = [
-        { key: 'Name', value: "Temporary instance of #{ami_id} for #{whoami}" },
-        { key: 'awsm:owner', value: whoami }
-      ]
-
-      configured_tags.each do |k, v|
-        tags << { key: k, value: v }
-      end
-
-      ec2.create_tags(
-        resources: [ instance_id ],
-        tags: tags
-      )
-
-      say "Tagged #{instance_id}:"
-      tags.each do |tag|
-        say "    #{tag[:key]} ", :cyan
-        say '=> '
-        say "#{tag[:value]}", :yellow
+        spin_up( c )
       end
     end
 
@@ -110,6 +95,10 @@ module Awsm
         "#{me_user}@#{me_host}"
       end
 
+      def override_alert( field, from, to )
+        say "Overriding #{field} from #{from} to #{to}!", :bold
+      end
+
       def instance_extant?( instance_id )
         description = ec2.describe_instances(
           instance_ids: [ instance_id ]
@@ -124,30 +113,50 @@ module Awsm
         true
       end
 
-      def config
-        Config.new.get('Spin')
+      def spin_up( c )
+        response = ec2.run_instances(
+          image_id: c.image_id,
+          key_name: c.key_name,
+          instance_type: c.instance_type,
+          security_group_ids: c.security_groups,
+          subnet_id: c.subnet,
+          min_count: 1,
+          max_count: 1
+        )
+
+        say "Spinning up #{c.image_id}..."
+
+        instance_id = response.instances.first.instance_id
+        say "Instance #{instance_id} is spinning up...", :green
+
+        while instance_extant?( instance_id ) == false
+          say '.', :green, false
+          sleep(3)
+        end
+
+        tags = [
+          { key: 'Name', value: "Temporary instance of #{c.image_id} for #{whoami}" },
+          { key: 'awsm:owner', value: whoami }
+        ]
+
+        c.tags.each do |k, v|
+          tags << { key: k, value: v }
+        end
+
+        ec2.create_tags(
+          resources: [ instance_id ],
+          tags: tags
+        )
+
+        say "Tagged #{instance_id}:"
+        tags.each do |tag|
+          say "    #{tag[:key]} ", :cyan
+          say '=> '
+          say "#{tag[:value]}", :yellow
+        end
       end
 
-      def configured_security_groups
-        config['SecurityGroups']
-      end
-
-      def configured_subnet
-        config['Subnet']
-      end
-
-      def configured_instance_type
-        config['InstanceType']
-      end
-
-      def configured_key_name
-        config['KeyName']
-      end
-
-      def configured_tags
-        config['Tags']
-      end
-    end
-  end
-end
-end
+    end #no_commands
+  end #class
+end #module
+end #module

@@ -2,8 +2,10 @@ require 'yaml'
 require 'thor'
 require 'terminal-table'
 
-require 'awsm/config'
 require 'awsm/version'
+
+require 'awsm/configure'
+
 require 'awsm/loadbalancers'
 require 'awsm/autoscalinggroups'
 require 'awsm/dns'
@@ -13,4 +15,8 @@ require 'awsm/clibase'
 require 'awsm/cli/unused'
 require 'awsm/cli/spin'
 require 'awsm/cli/main'
+
+require "#{ENV['HOME']}/.awsm"
+
+
 

@@ -21,7 +21,7 @@ module Awsm
 
     def load_dns_records
       paged_response = @client.list_resource_record_sets(
-        hosted_zone_id: ENV['AWSM_HOSTEDZONE']
+        hosted_zone_id: Awsm::dns_config.hosted_zone
       )
 
       paged_response.each_page do |p|
