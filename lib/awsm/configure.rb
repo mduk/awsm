@@ -47,50 +47,33 @@ module Awsm
   class Spinulator
 
     def initialize( default=nil )
-      @default = default
-      @config = {}
+      @config = { tags: {} }
+      if default
+        @config[:instance_type] = default.instance_type
+        @config[:key_name] = default.key_name
+        @config[:subnet] = default.subnet
+        @config[:security_groups] = default.security_groups
+        @config[:tags] = default.tags || {}
+      end
     end
 
     def method_missing( name, *args )
       n_args = args.length
 
-      write = ( n_args > 0 || block_given?)
+      write = ( n_args > 0 || block_given? )
 
       if write
         if block_given?
           args << yield
         end
 
-        unless @config[ name ].nil?
-          raise StandardError, "#{name} has already been set!"
-        end
-
         @config[ name ] = args.first
       else
-        if @config[ name ].nil? && @default.nil?
-          raise StandardError, "#{name} has not been set."
-        elsif @config[ name ].nil?
-          return @default.send( name.to_sym )
-        else
-          return @config[ name ]
-        end
+        return @config[ name ]
       end
-    end
-
-    def to_h
-      {
-        instance_type: self.instance_type,
-        key_name: self.key_name,
-        subnet: self.subnet,
-        tags: self.tags
-      }
     end
 
     def tag( name, value=nil )
-      if @config[:tags].nil?
-        @config[:tags] = {}
-      end
-
       if value.nil? && block_given?
         @config[:tags][ name ] = yield
       elsif value && !block_given?
