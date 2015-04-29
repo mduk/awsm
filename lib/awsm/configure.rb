@@ -6,13 +6,29 @@ module Awsm
   end
 
   def self.spin_config( preset=nil )
-    @@c.get_spin( preset )
+    @@c.spin( preset )
+  end
+
+  def self.dns_config
+    @@c.dns
   end
 
   class Configulator
 
     def initialize
       @spin_blocks = {}
+      @dns_block = nil
+    end
+
+    def dns( &block )
+      if block_given?
+        @dns_block = block
+        return
+      end
+
+      c = Domainatrix.new
+      @dns_block.call( c )
+      return c
     end
 
     def spin( preset=nil, &block )
@@ -22,10 +38,9 @@ module Awsm
         end
 
         @spin_blocks[ preset ] = block
+        return
       end
-    end
 
-    def get_spin( preset=nil )
       if preset.nil? || preset == 'default'
         preset = 'default'
         c = Spinulator.new
@@ -40,6 +55,19 @@ module Awsm
       @spin_blocks[ preset ].call( c )
 
       return c
+
+    end
+
+  end
+
+  class Domainatrix
+
+    def hosted_zone( zone=nil )
+      if zone.nil?
+        return @hosted_zone
+      end
+
+      @hosted_zone = zone
     end
 
   end
