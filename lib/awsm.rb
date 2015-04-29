@@ -17,6 +17,3 @@ require 'awsm/cli/spin'
 require 'awsm/cli/main'
 
 require "#{ENV['HOME']}/.awsm"
-
-
-
