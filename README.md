@@ -37,8 +37,7 @@ Awsm requires three enviornment variables to be set in order to work. I use some
 
 ## Configuring Awsm
 
-Awsm will read configuration from `~/.awsm.rb`. This is just used for the `spin` subcommand for now.
-An example `~/.awsm.rb` file is shown below:
+Awsm will read configuration from `~/.awsm.rb`. An example `~/.awsm.rb` file is shown below:
 
 ```
 Awsm::configure do |c|
