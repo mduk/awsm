@@ -38,19 +38,30 @@ Awsm requires four enviornment variables to be set in order to work. I use somet
 
 ## Configuring Awsm
 
-Awsm will read configuration from `~/.awsm`. This is just used for the `spin` subcommand for now.
-An example `~/.awsm` file is shown below:
+Awsm will read configuration from `~/.awsm.rb`. This is just used for the `spin` subcommand for now.
+An example `~/.awsm.rb` file is shown below:
 
 ```
-Spin:
-  InstanceType: t2.micro
-  KeyName: my-aws-keypair
-  Subnet: subnet-a0b1c2d3
-  SecurityGroups:
-    - sg-a0b1c2d3
-  Tags:
-    "h2g2:contact": "ford.prefect@megadodo.h2g2"
-    "h2g2:planet": kakrafoon
+Awsm::configure do |c|
+
+  # Default Parameters
+  c.spin do |c|
+    c.instance_type 't2.micro'
+    c.key_name 'my-key'
+    c.subnet 'subnet-a0b1c2d3'
+    c.security_group 'sg-a0b1c2d3'
+    c.tag 'h2g2:contact', 'ford.prefect@megadodo.h2g2'
+    c.tag 'h2g2:planet', 'kakrafoon'
+  end
+
+  # Preset: mything
+  c.spin 'mything' do |c|
+    c.image_id 'ami-a0b1c2d3'
+    c.security_group 'sg-a1b2c3d4'
+    c.tag 'thing:environment', 'dev'
+  end
+
+end
 ```
 
 # Licence
