@@ -38,21 +38,14 @@ module Awsm
         "Spin down the specified instance"
       def down( instance_id )
         response = ec2.describe_instances(
-          instance_ids: [ instance_id ]
+          filters: [
+            { name: 'instance-id', values: [ instance_id ] },
+            { name: 'tag:awsm:owner', values: [ whoami ] }
+          ]
         )
 
-        if response.reservations.first.instances.length == 0
-          say "Instance #{instance_id} not found."
-          return
-        end
-
-        instance = response.reservations.first.instances.first
-        owner_tag = instance.tags.select do |t|
-          t.key == 'awsm:owner' && t.value == whoami
-        end
-
-        if owner_tag.length == 0
-          say "Instance #{instance_id} doesn't belong to you, leave it alone."
+        if response.reservations.length == 0
+          say "Instance #{instance_id} is not one of your spinning instances."
           return
         end
 
@@ -69,7 +62,7 @@ module Awsm
       def list
         response = ec2.describe_instances(
           filters: [
-            { name: 'tag-key', values: [ "awsm:owner" ] }
+            { name: 'tag:awsm:owner', values: [ whoami ] }
           ]
         )
         spinning = []
