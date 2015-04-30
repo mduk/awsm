@@ -37,6 +37,25 @@ module Awsm
       desc 'down [INSTANCE_ID]',
         "Spin down the specified instance"
       def down( instance_id )
+        response = ec2.describe_instances(
+          instance_ids: [ instance_id ]
+        )
+
+        if response.reservations.first.instances.length == 0
+          say "Instance #{instance_id} not found."
+          return
+        end
+
+        instance = response.reservations.first.instances.first
+        owner_tag = instance.tags.select do |t|
+          t.key == 'awsm:owner' && t.value == whoami
+        end
+
+        if owner_tag.length == 0
+          say "Instance #{instance_id} doesn't belong to you, leave it alone."
+          return
+        end
+
         say "Spinning down (terminating) #{instance_id}...", :red
         ec2.terminate_instances(
           instance_ids: [ instance_id ]
