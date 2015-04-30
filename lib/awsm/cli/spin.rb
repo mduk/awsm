@@ -15,23 +15,23 @@ module Awsm
           c.image_id( preset )
         else
           c = Awsm::spin_config( preset )
-
-          unless options[:image_id].nil?
-            unless c.image_id.nil?
-              override_alert( 'image_id', c.image_id, options[:image_id] )
-            end
-            c.image_id( options[:image_id] )
-          end
-
-          unless options[:key_name].nil?
-            unless c.key_name.nil?
-              override_alert( 'key_name', c.key_name, options[:key_name] )
-            end
-            c.key_name( options[:key_name] )
-          end
-
-          spin_up( c )
         end
+
+        unless options[:image_id].nil?
+          unless c.image_id.nil?
+            override_alert( 'image_id', c.image_id, options[:image_id] )
+          end
+          c.image_id( options[:image_id] )
+        end
+
+        unless options[:key_name].nil?
+          unless c.key_name.nil?
+            override_alert( 'key_name', c.key_name, options[:key_name] )
+          end
+          c.key_name( options[:key_name] )
+        end
+
+        spin_up( c )
       end
 
       desc 'down [INSTANCE_ID]',
