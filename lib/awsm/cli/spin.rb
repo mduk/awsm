@@ -45,7 +45,7 @@ module Awsm
         )
 
         if response.reservations.length == 0
-          say "Instance #{instance_id} is not one of your spinning instances."
+          say "Instance #{instance_id} not spinning."
           return
         end
 
