@@ -45,7 +45,7 @@ module Awsm
         preset = 'default'
         c = Spinulator.new
       else
-        c = Spinulator.new( get_spin('default') )
+        c = Spinulator.new( spin('default') )
       end
 
       if @spin_blocks[ preset ].nil?
