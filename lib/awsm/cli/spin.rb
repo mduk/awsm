@@ -92,17 +92,25 @@ module Awsm
         end
 
         def spin_up( c )
+          userdata = MIME::Multipart::Mixed.new
+          c.userdata.each do |path, file|
+            userdata.attach( MIME::Text.new( file, 'mendeley-config', charset: 'us-ascii' ), filename: path )
+          end
+          blobbified = Base64.encode64( userdata.to_s )
+
           response = ec2.run_instances(
             image_id: c.image_id,
             key_name: c.key_name,
             instance_type: c.instance_type,
             security_group_ids: c.security_groups,
             subnet_id: c.subnet,
+            user_data: blobbified,
             min_count: 1,
             max_count: 1
           )
 
           say "Spinning up #{c.image_id}..."
+          say "Userdata blob: #{blobbified}"
 
           instance_id = response.instances.first.instance_id
           say "Instance #{instance_id} is spinning up...", :green

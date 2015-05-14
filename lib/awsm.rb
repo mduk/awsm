@@ -2,6 +2,8 @@ require 'yaml'
 require 'thor'
 require 'terminal-table'
 require 'json'
+require 'mime'
+require 'base64'
 
 require 'awsm/version'
 

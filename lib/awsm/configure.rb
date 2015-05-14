@@ -127,6 +127,7 @@ module Awsm
         @config[:subnet] = default.subnet
         @config[:security_groups] = default.security_groups
         @config[:tags] = default.tags || {}
+        @config[:userdata] = default.userdata || {}
       end
     end
 
@@ -172,6 +173,14 @@ module Awsm
       elsif !security_group.nil? && block_given?
         raise StandardError, "You can't specify both a value and a block. Choose."
       end
+    end
+
+    def userdata( path=nil, file=nil )
+      if path.nil? && file.nil?
+        return @config[:userdata]
+      end
+
+      @config[:userdata][ path ] = file
     end
 
   end
