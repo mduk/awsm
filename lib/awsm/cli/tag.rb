@@ -2,21 +2,30 @@ module Awsm
   module CLI
     class Tag < Clibase
 
-      desc 'find tag=value [tag=] [=value] [...]',
-        "Find instances by tags."
-      method_option :format, :type => :string, :default => :pretty
+      desc 'find tag=value [--instances|--images] [tag=] [=value] [...]',
+        "Find resources by tags."
+      method_option :format, :type => :string, :default => :pretty,
+        :desc => "Specify output format. [pretty|tsv|csv|json]"
+      method_option :instances, :type => :boolean, :lazy_default => false,
+        :desc => "Find instances matching tags."
+      method_option :images, :type => :boolean, :lazy_default => false,
+        :desc => "Find Images matching tags."
       def find( *args )
         if args == []
           help( :find )
           return
         end
 
-        format = :pretty
-        if !options[:format].nil?
-          format = options[:format].to_sym
+        format = options[:format].to_sym
+        filters = argsToFilters( args )
+
+        if options[:instances]
+          Table::Instance.new( filter_instances( filters ), format ).print
         end
 
-        Table::Instance.new( filter_instances( argsToFilters( args ) ), format ).print
+        if options[:images]
+          Table::Image.new( filter_images( filters ), format ).print
+        end
       end
 
       desc 'list [resource_id]',

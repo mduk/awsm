@@ -1,8 +1,8 @@
 module Awsm
   class TableBase
 
-    def initialize( instances, format=:pretty )
-      @instances = instances
+    def initialize( objects, format=:pretty )
+      @objects = objects
       @format = format
 
       @use_fields = config.use_fields
@@ -16,7 +16,7 @@ module Awsm
         @fields[ name ] = field[:block]
       end
 
-      @rows = @instances.map do |i|
+      @rows = @objects.map do |i|
         row = []
         @use_fields.each do |f|
           row << extract_field( i, f )
@@ -50,6 +50,13 @@ module Awsm
     end
 
     private
+
+    def field( field )
+      if @fields[ field ].nil?
+        raise StandardError, "Unknown field: #{field}"
+      end
+      @fields[ field ]
+    end
 
     def extract_field( instance, field )
       @fields[ field ].call( instance )

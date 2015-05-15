@@ -31,7 +31,7 @@ module Awsm
       end
 
       def config
-        Awsm::instance_table_config
+        Awsm::table_config( :image )
       end
 
     end

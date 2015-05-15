@@ -14,6 +14,7 @@ require 'awsm/instances'
 
 require 'awsm/tablebase'
 require 'awsm/table/instance'
+require 'awsm/table/image'
 
 require 'awsm/clibase'
 require 'awsm/cli/tag'
