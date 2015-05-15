@@ -63,9 +63,7 @@ module Awsm
         instances = filter_instances( [
           { name: 'tag:awsm:owner', values: [ whoami ] }
         ] )
-        Table::Instance.new( instances, [
-          :instance_id, :state, :image_id, :awsm_owner, :launch_time, :private_ip
-        ] ).print
+        Table::Instance.new( instances, :pretty ).print
       end
 
       no_commands do
