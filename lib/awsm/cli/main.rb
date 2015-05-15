@@ -16,6 +16,9 @@ module Awsm
       desc 'unused', 'Find unused resources'
       subcommand 'unused', Awsm::CLI::Unused
 
+      desc 'tag', 'Search by tags'
+      subcommand 'tag', Awsm::CLI::Tag
+
       desc "specific <comma-separated-elb-names>",
         "Only find specific ELBs named in a comma-separated list."
       def specific( elb_names )
