@@ -2,53 +2,14 @@ module Awsm
   module Table
     class Instance
 
-      def initialize( instances, fields = [ :instance_id, :name, :state, :image_id, :launch_time, :private_ip ] )
-        @fields = fields
-        @rows = instances.map do |i|
-          row = []
-          @fields.each do |f|
-            row << extract_field( i, f )
-          end
-          row
+      def initialize( instances, fields=nil )
+        @use_fields = if fields.nil?
+          Awsm::instance_table_config.use_fields
+        else
+          fields
         end
-      end
 
-      def print
-        puts Terminal::Table.new(
-          headings: @fields.map { |f| heading( f ) },
-          rows: @rows
-        )
-      end
-
-      private
-
-      def extract_field( instance, field )
-        case field
-          when :instance_id
-            instance.instance_id
-          when :name
-            tag( 'Name', instance.tags ).first
-          when :state
-            instance.state.name
-          when :image_id
-            instance.image_id
-          when :launch_time
-            instance.launch_time
-          when :private_ip
-            if instance.state.name == "running"
-              instance.private_ip_address
-            else
-              'N/A'
-            end
-          when :awsm_owner
-            tag( 'awsm:owner', instance.tags ).first
-          else
-            raise StandardError "Unknown field"
-        end
-      end
-
-      def heading( field )
-        headings = {
+        @headings = {
           instance_id: 'Instance ID',
           name: 'Name',
           state: 'State',
@@ -57,7 +18,42 @@ module Awsm
           private_ip: 'Private IP',
           awsm_owner: 'Owner'
         }
-        headings[ field ]
+
+        @fields = {
+          instance_id: -> (i) { i.instance_id },
+          name: -> (i) { tag( 'Name', i.tags ).first },
+          state: -> (i) { i.state.name },
+          image_id: -> (i) { i.image_id },
+          launch_time: -> (i) { i.launch_time },
+          private_ip: -> (i) { i.private_ip_address },
+          awsm_owner: -> (i) { tag( 'awsm:owner', i.tags ).first }
+        }
+
+        Awsm::instance_table_config.fields.each do |name, field|
+          @headings[ name ] = field[:heading]
+          @fields[ name ] = field[:block]
+        end
+
+        @rows = instances.map do |i|
+          row = []
+          @use_fields.each do |f|
+            row << extract_field( i, f )
+          end
+          row
+        end
+      end
+
+      def print
+        puts Terminal::Table.new(
+          headings: @use_fields.map { |f| @headings[ f ] },
+          rows: @rows
+        )
+      end
+
+      private
+
+      def extract_field( instance, field )
+        @fields[ field ].call( instance )
       end
 
       def tag( key, tags )

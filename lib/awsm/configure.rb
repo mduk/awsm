@@ -13,11 +13,52 @@ module Awsm
     @@c.dns
   end
 
+  def self.instance_table_config
+    @@c.instance_table
+  end
+
+  class InstanceTablutron
+
+    def initialize
+      @use_fields = []
+      @fields = {}
+    end
+
+    def use_fields( fields=nil )
+      if fields.nil?
+        return @use_fields
+      end
+
+      @use_fields = fields
+    end
+
+    def add_field( name, heading, &block )
+      @fields[ name ] = {
+        heading: heading,
+        block: block
+      }
+    end
+
+    def fields
+      return @fields
+    end
+
+  end
+
   class Configulator
 
     def initialize
       @spin_blocks = {}
       @dns_block = nil
+    end
+
+    def instance_table
+      if block_given?
+        @instance_tablutron = InstanceTablutron.new
+        yield @instance_tablutron
+      else
+        @instance_tablutron
+      end
     end
 
     def dns( &block )
