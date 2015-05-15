@@ -60,47 +60,15 @@ module Awsm
       option :simple, :type => :boolean, :default => false, :aliases => '-s',
         :desc => "Display list without prettiness - good for sedding"
       def list
-        response = ec2.describe_instances(
-          filters: [
-            { name: 'tag:awsm:owner', values: [ whoami ] }
-          ]
-        )
-        spinning = []
-        response.reservations.each do |r|
-          r.instances.each do |i|
-            owner = i.tags.select { |t| t.key == 'awsm:owner' }.first.value
-
-            if owner == whoami
-              fields = [ i.instance_id, i.state.name, i.image_id, owner, i.launch_time ]
-
-              if i.state.name == 'running'
-                fields << i.private_ip_address
-              else
-                fields << 'N/A'
-              end
-
-              spinning << fields
-            end
-          end
-        end
-
-        if options[:simple]
-          spinning.each do |row|
-            say row.join(' ')
-          end
-        else
-          puts_table(
-            headings: [ 'Instance ID', 'State', 'AMI ID', 'Owner', 'Launched Time', 'Private IP' ],
-            rows: spinning
-          )
-        end
+        instances = filter_instances( [
+          { name: 'tag:awsm:owner', values: [ whoami ] }
+        ] )
+        Table::Instance.new( instances, [
+          :instance_id, :state, :image_id, :awsm_owner, :launch_time, :private_ip
+        ] ).print
       end
 
       no_commands do
-        def ec2
-          Aws::EC2::Client.new
-        end
-
         def whoami
           me_host = `hostname -f`.strip
           me_user = `whoami`.strip

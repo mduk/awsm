@@ -11,6 +11,8 @@ require 'awsm/autoscalinggroups'
 require 'awsm/dns'
 require 'awsm/instances'
 
+require 'awsm/table/instance'
+
 require 'awsm/clibase'
 require 'awsm/cli/unused'
 require 'awsm/cli/spin'
