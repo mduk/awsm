@@ -26,6 +26,14 @@ module Awsm
         instances
       end
 
+      def filter_images( filters )
+        images = []
+        ec2.describe_images( filters: filters ).images.each do |i|
+          images << i
+        end
+        images
+      end
+
     end
   end
 end
