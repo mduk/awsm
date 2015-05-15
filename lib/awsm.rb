@@ -22,4 +22,10 @@ require 'awsm/cli/unused'
 require 'awsm/cli/spin'
 require 'awsm/cli/main'
 
+if !File.exists?( "#{ENV['HOME']}/.awsm.rb" )
+  puts "A configuration file is required at ~/.awsm.rb"
+  puts "See https://github.com/mduk/awsm/blob/master/README.md for an example config file."
+  exit
+end
+
 require "#{ENV['HOME']}/.awsm"
