@@ -42,6 +42,18 @@ Awsm will read configuration from `~/.awsm.rb`. An example `~/.awsm.rb` file is 
 ```
 Awsm::configure do |c|
 
+  c.instance_table do |c|
+
+    # Define which fields to display in an instance table and in what order
+    c.use_fields [ :environment, :name, :instance_id, :image_id, :launch_time, :state, :private_ip ]
+
+    # Add a custom field. Name, Heading, Block (extracts field value from instance object)
+    c.add_field :environment, 'Environment' do |i|
+      i.tags.find { |t| t.key == 'myapp:environment' }.value
+    end
+
+  end
+
   c.dns do |c|
     c.hosted_zone '/hostedzone/somethingorother'
   end
