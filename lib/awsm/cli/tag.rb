@@ -7,7 +7,7 @@ module Awsm
       method_option :format, :type => :string, :default => :pretty
       def find( *args )
         if args == []
-          say "Please specify at least one tag=/=value/tag=value"
+          help( :find )
           return
         end
 
