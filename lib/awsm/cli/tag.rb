@@ -2,10 +2,23 @@ module Awsm
   module CLI
     class Tag < Clibase
 
-      desc 'find tag=value [tag2=value2] [...]',
-        "Find resources by tags. Resources must have all tag key value pairs specified."
+      desc 'find tag=value [tag=] [=value] [...]',
+        "Find instances by tags."
       def find( *args )
         Table::Instance.new( filter_instances( argsToFilters( args ) ) ).print
+      end
+
+      desc 'list [resource_id]',
+        "List tags for resource."
+      def list( resource_id )
+        case resource_id
+          when /i-[0-9a-f]+/
+            filter_instances( [ { name: 'instance-id', values: [ resource_id ] } ] ).first.tags.each do |t|
+              say "#{t.key} => #{t.value}"
+            end
+          else
+            raise StandardError, "Unknown resource id format: #{resource_id}"
+        end
       end
 
       no_commands do
