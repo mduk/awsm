@@ -30,6 +30,9 @@ module Awsm
         @table[ table ] = Tablulatrix.new
         yield @table[ table ]
       else
+        if @table[ table ].nil?
+          raise StandardError, "Invalid table configuration: #{table}"
+        end
         @table[ table ]
       end
     end
