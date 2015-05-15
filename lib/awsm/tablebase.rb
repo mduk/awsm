@@ -1,15 +1,11 @@
 module Awsm
   class TableBase
 
-    def initialize( instances, fields=nil, format=:pretty )
+    def initialize( instances, format=:pretty )
       @instances = instances
-      @use_fields = if fields.nil?
-        config.use_fields
-      else
-        fields
-      end
       @format = format
 
+      @use_fields = config.use_fields
       @fields = defaultFields
       @headings = defaultHeadings
     end
