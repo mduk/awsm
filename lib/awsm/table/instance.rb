@@ -59,6 +59,12 @@ module Awsm
             @rows.each do |row|
               puts row.join(',')
             end
+          when :json
+            json = []
+            @rows.each do |row|
+              json << Hash[ @use_fields.zip( row ) ]
+            end
+            puts JSON.generate( json )
           else
             puts "Unknown output format: #{@format}"
         end
