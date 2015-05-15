@@ -12,6 +12,7 @@ require 'awsm/autoscalinggroups'
 require 'awsm/dns'
 require 'awsm/instances'
 
+require 'awsm/tablebase'
 require 'awsm/table/instance'
 
 require 'awsm/clibase'
