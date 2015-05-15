@@ -5,6 +5,7 @@ module Awsm
       desc 'find tag=value [tag=] [=value] [...]',
         "Find instances by tags."
       method_option :fields, :type => :string
+      method_option :format, :type => :string, :default => :pretty
       def find( *args )
         if args == []
           say "Please specify at least one tag=/=value/tag=value"
@@ -14,7 +15,13 @@ module Awsm
         if !options[:fields].nil?
           fields = options[:fields].split(',').map { |f| f.to_sym }
         end
-        Table::Instance.new( filter_instances( argsToFilters( args ) ), fields ).print
+
+        format = :pretty
+        if !options[:format].nil?
+          format = options[:format].to_sym
+        end
+
+        Table::Instance.new( filter_instances( argsToFilters( args ) ), fields, format ).print
       end
 
       desc 'list [resource_id]',

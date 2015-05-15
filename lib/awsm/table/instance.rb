@@ -2,7 +2,8 @@ module Awsm
   module Table
     class Instance
 
-      def initialize( instances, fields=nil )
+      def initialize( instances, fields=nil, format=:pretty )
+        @format = format
         @use_fields = if fields.nil?
           Awsm::instance_table_config.use_fields
         else
@@ -44,10 +45,23 @@ module Awsm
       end
 
       def print
-        puts Terminal::Table.new(
-          headings: @use_fields.map { |f| @headings[ f ] },
-          rows: @rows
-        )
+        case @format
+          when :pretty
+            puts Terminal::Table.new(
+              headings: @use_fields.map { |f| @headings[ f ] },
+              rows: @rows
+            )
+          when :tsv
+            @rows.each do |row|
+              puts row.join("\t")
+            end
+          when :csv
+            @rows.each do |row|
+              puts row.join(',')
+            end
+          else
+            puts "Unknown output format: #{@format}"
+        end
       end
 
       private
@@ -60,6 +74,7 @@ module Awsm
         tags.select { |t| t.key == key }
           .map { |t| t.value }
       end
+
 
     end
   end
