@@ -42,7 +42,7 @@ Awsm will read configuration from `~/.awsm.rb`. An example `~/.awsm.rb` file is 
 ```
 Awsm::configure do |c|
 
-  c.instance_table do |c|
+  c.table :instance do |c|
 
     # Define which fields to display in an instance table and in what order
     c.use_fields [ :environment, :name, :instance_id, :image_id, :launch_time, :state, :private_ip ]
@@ -52,6 +52,10 @@ Awsm::configure do |c|
       i.tags.find { |t| t.key == 'myapp:environment' }.value
     end
 
+  end
+
+  c.table :image do |c|
+    c.use_fields [ :image_id, :name, :creation_date ]
   end
 
   c.dns do |c|
