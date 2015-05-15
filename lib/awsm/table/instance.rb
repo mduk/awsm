@@ -27,7 +27,7 @@ module Awsm
       end
 
       def config
-        Awsm::instance_table_config
+        Awsm::table_config( :instance )
       end
 
     end

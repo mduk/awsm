@@ -13,36 +13,8 @@ module Awsm
     @@c.dns
   end
 
-  def self.instance_table_config
-    @@c.instance_table
-  end
-
-  class InstanceTablutron
-
-    def initialize
-      @use_fields = []
-      @fields = {}
-    end
-
-    def use_fields( fields=nil )
-      if fields.nil?
-        return @use_fields
-      end
-
-      @use_fields = fields
-    end
-
-    def add_field( name, heading, &block )
-      @fields[ name ] = {
-        heading: heading,
-        block: block
-      }
-    end
-
-    def fields
-      return @fields
-    end
-
+  def self.table_config( table )
+    @@c.table( table )
   end
 
   class Configulator
@@ -50,14 +22,15 @@ module Awsm
     def initialize
       @spin_blocks = {}
       @dns_block = nil
+      @table = {}
     end
 
-    def instance_table
+    def table( table )
       if block_given?
-        @instance_tablutron = InstanceTablutron.new
-        yield @instance_tablutron
+        @table[ table ] = Tablulatrix.new
+        yield @table[ table ]
       else
-        @instance_tablutron
+        @table[ table ]
       end
     end
 
@@ -97,6 +70,34 @@ module Awsm
 
       return c
 
+    end
+
+  end
+
+  class Tablulatrix
+
+    def initialize
+      @use_fields = []
+      @fields = {}
+    end
+
+    def use_fields( fields=nil )
+      if fields.nil?
+        return @use_fields
+      end
+
+      @use_fields = fields
+    end
+
+    def add_field( name, heading, &block )
+      @fields[ name ] = {
+        heading: heading,
+        block: block
+      }
+    end
+
+    def fields
+      return @fields
     end
 
   end
