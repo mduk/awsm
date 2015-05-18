@@ -20,6 +20,7 @@ require 'awsm/table/image'
 
 require 'awsm/clibase'
 require 'awsm/cli/tag'
+require 'awsm/cli/dns'
 require 'awsm/cli/unused'
 require 'awsm/cli/spin'
 require 'awsm/cli/main'

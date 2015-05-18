@@ -19,6 +19,9 @@ module Awsm
       desc 'tag', 'Search by tags'
       subcommand 'tag', Awsm::CLI::Tag
 
+      desc 'dns', 'DNS tools'
+      subcommand 'dns', Awsm::CLI::Dns
+
       desc "specific <comma-separated-elb-names>",
         "Only find specific ELBs named in a comma-separated list."
       def specific( elb_names )
@@ -37,25 +40,6 @@ module Awsm
         results.each { |elb| print_result(elb) }
       end
 
-      desc "r53 [dns-name]",
-        "Show me what <dns-name> points at."
-      def r53( dns_name )
-        dns_len = dns_name.length
-
-        say "#{dns_name} ", :yellow
-        say "=> ", :bold
-        dns.get_by_record( dns_name ).each_with_index do |r, i|
-        if i > 0
-          say " " * ( dns_len + 4 )
-        end
-        say "(#{r.type}) ", :green
-        case r.type
-          when "A"
-            say "#{r.alias_target.dns_name}", :cyan
-          end
-        end
-      end
-
     no_commands do
       def load_balancers
         Awsm::LoadBalancers.new
@@ -63,10 +47,6 @@ module Awsm
 
       def instances
         Awsm::Instances.new
-      end
-
-      def dns
-        Awsm::Dns.new
       end
 
       def asg
