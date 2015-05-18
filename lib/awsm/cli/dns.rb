@@ -4,7 +4,7 @@ module Awsm
 
       desc 'list', 'list'
       method_option :type, :type => :string, :default => 'A,CNAME,MX'
-      method_option :record, :type => :string, :default => ''
+      method_option :record, :type => :string, :default => nil
       def list
         r53 = Aws::Route53::Client.new
 
