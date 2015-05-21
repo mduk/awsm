@@ -93,9 +93,12 @@ module Awsm
 
         def spin_up( c )
           userdata = MIME::Multipart::Mixed.new
-          c.userdata.each do |path, file|
-            userdata.attach( MIME::Text.new( file, 'mendeley-config', charset: 'us-ascii' ), filename: path )
-          end
+          yaml = <<eof
+packages:
+  - jq
+eof
+          userdata.attach( MIME::Text.new( yaml, 'cloud-config', charset: 'us-ascii' ) )
+
           blobbified = Base64.encode64( userdata.to_s )
 
           response = ec2.run_instances(
